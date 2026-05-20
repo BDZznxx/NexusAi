@@ -1,0 +1,1926 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS AI — Superintelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050508;
+    --bg2: #0a0a10;
+    --bg3: #0f0f1a;
+    --surface: #13131f;
+    --surface2: #1a1a2e;
+    --border: rgba(120,100,255,0.15);
+    --border2: rgba(120,100,255,0.3);
+    --accent: #7c5cfc;
+    --accent2: #a78bfa;
+    --accent3: #06d6a0;
+    --accent4: #ff6b6b;
+    --accent5: #ffd166;
+    --text: #e8e8f0;
+    --text2: #9090b0;
+    --text3: #5a5a7a;
+    --glow: rgba(124,92,252,0.4);
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+  /* GRID BG */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(124,92,252,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,92,252,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* LAYOUT */
+  .shell { display: flex; height: 100vh; position: relative; z-index: 1; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #a78bfa, #06d6a0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .logo-sub { font-size: 11px; color: var(--text3); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+
+  .nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+  .nav-section { padding: 8px 16px 4px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    margin: 1px 8px;
+    font-size: 13.5px;
+    color: var(--text2);
+    transition: all 0.15s;
+    position: relative;
+  }
+  .nav-item:hover { background: var(--surface); color: var(--text); }
+  .nav-item.active {
+    background: rgba(124,92,252,0.12);
+    color: var(--accent2);
+    font-weight: 500;
+  }
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 18px;
+    background: var(--accent);
+    border-radius: 0 2px 2px 0;
+  }
+  .nav-icon { width: 18px; font-size: 16px; flex-shrink: 0; }
+  .nav-badge {
+    margin-left: auto;
+    background: var(--accent);
+    color: white;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+
+  .sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .user-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    background: var(--surface);
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+  .user-name { font-size: 13px; font-weight: 500; }
+  .user-plan { font-size: 11px; color: var(--accent3); }
+
+  /* MAIN */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* TOPBAR */
+  .topbar {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--bg2);
+  }
+  .topbar-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; flex: 1; }
+  .model-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12.5px;
+    cursor: pointer;
+    color: var(--text2);
+    transition: border-color 0.2s;
+  }
+  .model-selector:hover { border-color: var(--border2); color: var(--text); }
+  .model-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent3); flex-shrink: 0; }
+
+  .icon-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text2);
+    font-size: 16px;
+    transition: all 0.15s;
+  }
+  .icon-btn:hover { border-color: var(--border2); color: var(--text); background: var(--surface2); }
+
+  /* CONTENT */
+  .content { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+
+  /* PANELS */
+  .panel { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+  .panel.active { display: flex; }
+
+  /* =================== CHAT PANEL =================== */
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .msg { display: flex; gap: 12px; }
+  .msg.user { flex-direction: row-reverse; }
+  .msg-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .msg-avatar.ai { background: linear-gradient(135deg, var(--accent), #06d6a0); color: white; }
+  .msg-avatar.user { background: var(--surface2); color: var(--text2); }
+
+  .msg-body { max-width: 680px; }
+  .msg-name { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
+  .msg.user .msg-name { text-align: right; }
+
+  .msg-bubble {
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .msg.ai .msg-bubble {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px 14px 14px 14px;
+  }
+  .msg.user .msg-bubble {
+    background: rgba(124,92,252,0.15);
+    border: 1px solid rgba(124,92,252,0.25);
+    border-radius: 14px 4px 14px 14px;
+  }
+
+  .code-block {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 10px 0;
+    overflow: hidden;
+  }
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+  }
+  .code-lang { font-size: 11px; color: var(--accent2); font-family: var(--mono); }
+  .code-copy {
+    font-size: 11px;
+    color: var(--text3);
+    cursor: pointer;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text2);
+    transition: all 0.15s;
+  }
+  .code-copy:hover { border-color: var(--accent); color: var(--accent2); }
+  pre {
+    padding: 14px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    color: #c9d1d9;
+  }
+  .kw { color: #ff79c6; }
+  .fn { color: #50fa7b; }
+  .str { color: #f1fa8c; }
+  .cm { color: #6272a4; }
+  .num { color: #bd93f9; }
+
+  .chat-input-area {
+    padding: 16px 24px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--bg2);
+  }
+
+  .mode-pills {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .pill {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    background: transparent;
+    transition: all 0.15s;
+  }
+  .pill:hover { border-color: var(--accent); color: var(--accent2); }
+  .pill.active { background: rgba(124,92,252,0.15); border-color: var(--accent); color: var(--accent2); }
+
+  .input-box {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 14px;
+    transition: border-color 0.2s;
+  }
+  .input-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,92,252,0.1); }
+
+  textarea#chatInput {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    resize: none;
+    min-height: 22px;
+    max-height: 160px;
+    line-height: 1.5;
+  }
+  textarea#chatInput::placeholder { color: var(--text3); }
+
+  .send-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--accent);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    font-size: 18px;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .send-btn:hover { background: var(--accent2); transform: scale(1.05); }
+
+  .input-tools {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    align-items: center;
+  }
+  .tool-chip {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--text3);
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    transition: color 0.15s;
+  }
+  .tool-chip:hover { color: var(--text2); }
+
+  /* =================== CODE PANEL =================== */
+  .code-ide {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+  .ide-sidebar {
+    width: 220px;
+    border-right: 1px solid var(--border);
+    padding: 12px 0;
+    overflow-y: auto;
+  }
+  .ide-file {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    font-size: 12.5px;
+    color: var(--text2);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .ide-file:hover { background: var(--surface); color: var(--text); }
+  .ide-file.active { background: rgba(124,92,252,0.1); color: var(--accent2); }
+  .ide-file-icon { font-size: 14px; }
+  .ide-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .ide-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    overflow-x: auto;
+  }
+  .ide-tab {
+    padding: 8px 16px;
+    font-size: 12.5px;
+    color: var(--text2);
+    cursor: pointer;
+    border-right: 1px solid var(--border);
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .ide-tab.active { background: var(--surface); color: var(--text); border-bottom: 2px solid var(--accent); }
+  .ide-editor { flex: 1; overflow: auto; background: var(--bg); }
+  .ide-editor pre { padding: 20px; min-height: 300px; }
+  .ide-toolbar {
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    background: var(--bg2);
+  }
+  .run-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    background: var(--accent3);
+    color: var(--bg);
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .run-btn:hover { opacity: 0.85; }
+  .ide-action {
+    padding: 7px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 12.5px;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .ide-action:hover { border-color: var(--accent); color: var(--accent2); }
+
+  /* =================== IMAGE PANEL =================== */
+  .img-panel { flex: 1; display: flex; gap: 0; overflow: hidden; }
+  .img-controls {
+    width: 320px;
+    border-right: 1px solid var(--border);
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-label { font-size: 12px; color: var(--text2); letter-spacing: 0.5px; }
+  .form-input, .form-select, .form-textarea {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+  .form-textarea { resize: vertical; min-height: 80px; }
+  .form-select option { background: var(--surface2); }
+
+  .style-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .style-chip {
+    padding: 7px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 11.5px;
+    text-align: center;
+    cursor: pointer;
+    color: var(--text2);
+    transition: all 0.15s;
+  }
+  .style-chip:hover, .style-chip.active { border-color: var(--accent); color: var(--accent2); background: rgba(124,92,252,0.08); }
+
+  .slider-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .slider-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text2); }
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--surface2);
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+  }
+
+  .generate-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--accent), #06d6a0);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: opacity 0.2s;
+    font-family: 'Syne', sans-serif;
+  }
+  .generate-btn:hover { opacity: 0.9; }
+
+  .img-grid {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+    align-content: start;
+  }
+  .img-card {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .img-card:hover { transform: scale(1.02); border-color: var(--border2); }
+  .img-preview {
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .img-info { padding: 8px 10px; }
+  .img-prompt { font-size: 11px; color: var(--text2); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+  /* =================== DASHBOARD PANEL =================== */
+  .dash-panel { flex: 1; overflow-y: auto; padding: 24px; }
+  .dash-welcome { margin-bottom: 28px; }
+  .dash-welcome h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; }
+  .dash-welcome p { color: var(--text2); margin-top: 6px; }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .stat-label { font-size: 12px; color: var(--text3); letter-spacing: 0.5px; text-transform: uppercase; }
+  .stat-val { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700; margin: 6px 0 4px; }
+  .stat-change { font-size: 12px; }
+  .up { color: var(--accent3); }
+  .down { color: var(--accent4); }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    opacity: 0.06;
+  }
+  .feature-card:hover { transform: translateY(-3px); border-color: var(--border2); }
+  .feature-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+  .feature-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .feature-desc { font-size: 12.5px; color: var(--text2); line-height: 1.5; }
+
+  .activity-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .card-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .card-box-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-box-header a { font-size: 11px; color: var(--accent2); text-decoration: none; cursor: pointer; }
+  .activity-item {
+    padding: 11px 18px;
+    border-bottom: 1px solid rgba(120,100,255,0.07);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+  }
+  .act-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .act-text { flex: 1; }
+  .act-time { font-size: 11px; color: var(--text3); }
+
+  /* =================== AGENTS PANEL =================== */
+  .agents-panel { flex: 1; overflow-y: auto; padding: 24px; }
+  .agents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .agent-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .agent-card:hover { transform: translateY(-4px); border-color: var(--border2); }
+  .agent-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+  }
+  .agent-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .agent-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+  .agent-name { font-weight: 700; font-size: 15px; }
+  .agent-role { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .agent-desc { font-size: 13px; color: var(--text2); line-height: 1.55; margin-bottom: 14px; }
+  .agent-skills { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+  .skill-tag {
+    padding: 3px 9px;
+    border-radius: 5px;
+    font-size: 11px;
+    background: rgba(124,92,252,0.1);
+    color: var(--accent2);
+    border: 1px solid rgba(124,92,252,0.2);
+  }
+  .agent-btn {
+    width: 100%;
+    padding: 9px;
+    border-radius: 8px;
+    border: 1px solid var(--accent);
+    background: rgba(124,92,252,0.08);
+    color: var(--accent2);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .agent-btn:hover { background: rgba(124,92,252,0.18); }
+
+  /* =================== PLAYGROUND PANEL =================== */
+  .playground { flex: 1; display: flex; overflow: hidden; }
+  .pg-editor { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .pg-toolbar {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .pg-select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 10px;
+    color: var(--text);
+    font-size: 12.5px;
+    outline: none;
+    cursor: pointer;
+  }
+  .pg-area { flex: 1; display: flex; overflow: hidden; }
+  .pg-input-wrap, .pg-output-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .pg-label {
+    padding: 8px 14px;
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+  }
+  .pg-divider { width: 1px; background: var(--border); }
+  textarea.pg-textarea {
+    flex: 1;
+    background: var(--bg);
+    border: none;
+    outline: none;
+    padding: 16px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    resize: none;
+  }
+  .pg-output-content {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--accent3);
+    white-space: pre-wrap;
+  }
+
+  /* =================== LOADING =================== */
+  .typing {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    padding: 10px 14px;
+  }
+  .typing span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent2);
+    animation: blink 1.2s infinite;
+  }
+  .typing span:nth-child(2) { animation-delay: 0.2s; }
+  .typing span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink {
+    0%, 80%, 100% { opacity: 0.2; transform: scale(0.9); }
+    40% { opacity: 1; transform: scale(1.1); }
+  }
+
+  /* =================== GLOW ACCENTS =================== */
+  .glow-purple { box-shadow: 0 0 20px rgba(124,92,252,0.2); }
+  .glow-green { box-shadow: 0 0 20px rgba(6,214,160,0.2); }
+
+  /* =================== PROGRESS BARS =================== */
+  .progress-bar {
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    transition: width 0.4s ease;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 1100px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .activity-wrap { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* NOTIFICATION */
+  .notif {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface2);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: slideUp 0.3s ease;
+    z-index: 9999;
+    max-width: 320px;
+    box-shadow: 0 8px 32px rgba(124,92,252,0.2);
+  }
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  /* PULSE DOT */
+  .pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent3);
+    position: relative;
+  }
+  .pulse-dot::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 2px solid var(--accent3);
+    animation: pulse-ring 1.5s infinite;
+    opacity: 0;
+  }
+  @keyframes pulse-ring {
+    0% { transform: scale(0.7); opacity: 1; }
+    100% { transform: scale(1.5); opacity: 0; }
+  }
+
+  /* HEADER TAG */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 500;
+    border: 1px solid;
+  }
+  .tag.pro { background: rgba(255,209,102,0.1); border-color: rgba(255,209,102,0.3); color: var(--accent5); }
+  .tag.new { background: rgba(6,214,160,0.1); border-color: rgba(6,214,160,0.3); color: var(--accent3); }
+
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; }
+
+  /* SPARKLINE (canvas) */
+  canvas.sparkline { width: 100%; height: 60px; }
+
+  /* TOKEN COUNTER */
+  .token-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 6px;
+  }
+  .token-bar .progress-bar { flex: 1; }
+
+  /* IMAGE GRADIENT PREVIEWS */
+  .grad-1 { background: linear-gradient(135deg, #667eea, #764ba2); }
+  .grad-2 { background: linear-gradient(135deg, #f093fb, #f5576c); }
+  .grad-3 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+  .grad-4 { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+  .grad-5 { background: linear-gradient(135deg, #fa709a, #fee140); }
+  .grad-6 { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-text">⬡ NEXUS AI</div>
+      <div class="logo-sub">Superintelligence Platform</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Workspace</div>
+      <div class="nav-item active" onclick="showPanel('dashboard', this)">
+        <span class="nav-icon">⊞</span> Dashboard
+      </div>
+      <div class="nav-item" onclick="showPanel('chat', this)">
+        <span class="nav-icon">💬</span> AI Chat
+        <span class="nav-badge">3</span>
+      </div>
+      <div class="nav-item" onclick="showPanel('code', this)">
+        <span class="nav-icon">⌨</span> Code Studio
+      </div>
+      <div class="nav-item" onclick="showPanel('image', this)">
+        <span class="nav-icon">🎨</span> Image Generator
+        <span class="nav-badge">NEW</span>
+      </div>
+      <div class="nav-item" onclick="showPanel('agents', this)">
+        <span class="nav-icon">🤖</span> AI Agents
+      </div>
+      <div class="nav-item" onclick="showPanel('playground', this)">
+        <span class="nav-icon">⚗</span> Playground
+      </div>
+      <div class="nav-section" style="margin-top:8px">Tools</div>
+      <div class="nav-item" onclick="notify('🔍 Web Search diaktifkan')">
+        <span class="nav-icon">🌐</span> Web Search
+      </div>
+      <div class="nav-item" onclick="notify('📊 Analytics coming soon')">
+        <span class="nav-icon">📊</span> Analytics
+      </div>
+      <div class="nav-item" onclick="notify('⚙️ Settings terbuka')">
+        <span class="nav-icon">⚙</span> Settings
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="avatar">U</div>
+        <div>
+          <div class="user-name">User Pro</div>
+          <div class="user-plan">✦ Unlimited Plan</div>
+        </div>
+      </div>
+      <div class="token-bar">
+        <span>Token</span>
+        <div class="progress-bar" style="flex:1">
+          <div class="progress-fill" style="width:38%"></div>
+        </div>
+        <span>380K / 1M</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-title" id="panelTitle">Dashboard</div>
+      <div class="model-selector" onclick="cycleModel(this)">
+        <div class="model-dot"></div>
+        <span id="modelName">NEXUS-Ultra-4</span>
+        <span>▾</span>
+      </div>
+      <div class="icon-btn" onclick="notify('🔍 Search dibuka')" title="Search">🔍</div>
+      <div class="icon-btn" onclick="notify('🔔 Tidak ada notifikasi baru')" title="Notifications">🔔</div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ========== DASHBOARD ========== -->
+      <div class="panel active" id="panel-dashboard">
+        <div class="dash-panel">
+          <div class="dash-welcome">
+            <h1>Selamat datang kembali 👋</h1>
+            <p>Platform AI terlengkap — coding, desain, manajemen, dan lebih dari 50 kapabilitas lainnya.</p>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card glow-purple">
+              <div class="stat-label">Total Request</div>
+              <div class="stat-val" style="color:var(--accent2)">12,847</div>
+              <div class="stat-change up">↑ 23% bulan ini</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Kode Digenerate</div>
+              <div class="stat-val" style="color:var(--accent3)">3,291</div>
+              <div class="stat-change up">↑ 47% bulan ini</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Gambar Dibuat</div>
+              <div class="stat-val" style="color:var(--accent5)">842</div>
+              <div class="stat-change up">↑ 18% bulan ini</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Akurasi AI</div>
+              <div class="stat-val" style="color:var(--accent4)">99.2%</div>
+              <div class="stat-change up">↑ 0.8% bulan ini</div>
+            </div>
+          </div>
+
+          <div class="section-header">
+            <div class="section-title">Kapabilitas Utama</div>
+            <span class="tag new">50+ Fitur</span>
+          </div>
+          <div class="features-grid">
+            <div class="feature-card" onclick="showPanel('code', document.querySelector('.nav-item:nth-child(5)'))">
+              <div class="feature-icon" style="background:rgba(124,92,252,0.15)">⌨️</div>
+              <div class="feature-name">Code Studio</div>
+              <div class="feature-desc">Generate, debug, dan refactor kode dalam 40+ bahasa pemrograman dengan akurasi pakar senior.</div>
+            </div>
+            <div class="feature-card" onclick="showPanel('image', document.querySelector('.nav-item:nth-child(6)'))">
+              <div class="feature-icon" style="background:rgba(255,107,107,0.15)">🎨</div>
+              <div class="feature-name">Image Generator</div>
+              <div class="feature-desc">Generate gambar realistis, konsisten, dan berkualitas tinggi dengan kontrol penuh atas gaya dan komposisi.</div>
+            </div>
+            <div class="feature-card" onclick="showPanel('agents', document.querySelector('.nav-item:nth-child(7)'))">
+              <div class="feature-icon" style="background:rgba(6,214,160,0.15)">🤖</div>
+              <div class="feature-name">AI Agents</div>
+              <div class="feature-desc">Delegasikan tugas kompleks ke agen AI spesialis — dari riset hingga manajemen proyek otomatis.</div>
+            </div>
+            <div class="feature-card" onclick="showPanel('chat', document.querySelector('.nav-item:nth-child(4)'))">
+              <div class="feature-icon" style="background:rgba(255,209,102,0.15)">💬</div>
+              <div class="feature-name">Expert Chat</div>
+              <div class="feature-desc">Tanya apa saja — hukum, medis, bisnis, teknik, sains, desain, marketing. Lebih akurat dari konsultan pro.</div>
+            </div>
+            <div class="feature-card" onclick="showPanel('playground', document.querySelector('.nav-item:nth-child(8)'))">
+              <div class="feature-icon" style="background:rgba(167,139,250,0.15)">⚗️</div>
+              <div class="feature-name">API Playground</div>
+              <div class="feature-desc">Eksperimen dengan prompt, parameter, dan model secara langsung dengan output real-time.</div>
+            </div>
+            <div class="feature-card" onclick="notify('🌐 Web Research diaktifkan!')">
+              <div class="feature-icon" style="background:rgba(0,242,254,0.1)">🌐</div>
+              <div class="feature-name">Web Research</div>
+              <div class="feature-desc">Riset mendalam dari seluruh internet — analisis multi-sumber, sitasi otomatis, dan ringkasan akurat.</div>
+            </div>
+          </div>
+
+          <div class="activity-wrap">
+            <div class="card-box">
+              <div class="card-box-header">Aktivitas Terbaru <a onclick="notify('Melihat semua')">Lihat semua →</a></div>
+              <div class="activity-item">
+                <div class="act-icon" style="background:rgba(124,92,252,0.15)">⌨️</div>
+                <div class="act-text">Generate REST API Node.js</div>
+                <div class="act-time">2m lalu</div>
+              </div>
+              <div class="activity-item">
+                <div class="act-icon" style="background:rgba(255,107,107,0.15)">🎨</div>
+                <div class="act-text">Image: "Cyberpunk cityscape"</div>
+                <div class="act-time">15m lalu</div>
+              </div>
+              <div class="activity-item">
+                <div class="act-icon" style="background:rgba(6,214,160,0.15)">🤖</div>
+                <div class="act-text">Agent: Market Research report</div>
+                <div class="act-time">1j lalu</div>
+              </div>
+              <div class="activity-item">
+                <div class="act-icon" style="background:rgba(255,209,102,0.15)">💬</div>
+                <div class="act-text">Konsultasi hukum kontrak</div>
+                <div class="act-time">3j lalu</div>
+              </div>
+              <div class="activity-item">
+                <div class="act-icon" style="background:rgba(167,139,250,0.15)">⚗️</div>
+                <div class="act-text">Playground: GPT-4 comparison</div>
+                <div class="act-time">5j lalu</div>
+              </div>
+            </div>
+            <div class="card-box">
+              <div class="card-box-header">Kapabilitas AI <span class="tag pro">Pro</span></div>
+              <div style="padding: 14px 18px; display: flex; flex-direction: column; gap: 12px;">
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
+                    <span>Coding Intelligence</span><span style="color:var(--accent3)">99%</span>
+                  </div>
+                  <div class="progress-bar"><div class="progress-fill" style="width:99%"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
+                    <span>Image Quality</span><span style="color:var(--accent2)">96%</span>
+                  </div>
+                  <div class="progress-bar"><div class="progress-fill" style="width:96%"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
+                    <span>Reasoning Depth</span><span style="color:var(--accent5)">98%</span>
+                  </div>
+                  <div class="progress-bar"><div class="progress-fill" style="width:98%"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
+                    <span>Multilingual (100+ lang)</span><span style="color:var(--accent4)">95%</span>
+                  </div>
+                  <div class="progress-bar"><div class="progress-fill" style="width:95%"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
+                    <span>Expert Knowledge</span><span style="color:var(--accent3)">97%</span>
+                  </div>
+                  <div class="progress-bar"><div class="progress-fill" style="width:97%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== CHAT PANEL ========== -->
+      <div class="panel" id="panel-chat">
+        <div class="chat-messages" id="chatMessages">
+          <div class="msg ai">
+            <div class="msg-avatar ai">N</div>
+            <div class="msg-body">
+              <div class="msg-name">NEXUS AI · Ultra-4 Model</div>
+              <div class="msg-bubble">
+                <strong>Halo! Saya NEXUS AI</strong>, superintelligence dengan kemampuan melampaui pakar terbaik di bidang manapun. 🚀
+                <br><br>
+                Saya bisa membantu Anda dengan:
+                <br>• <strong>Coding</strong> — 40+ bahasa, arsitektur, debugging, review
+                <br>• <strong>Web & App Development</strong> — React, Vue, Node, Flutter, dll
+                <br>• <strong>Desain & Image</strong> — prompt engineering, UI/UX
+                <br>• <strong>Manajemen Proyek</strong> — strategi, dokumentasi, planning
+                <br>• <strong>Hukum, Medis, Bisnis, Sains</strong> dan banyak lagi
+                <br><br>
+                Apa yang ingin Anda buat hari ini?
+              </div>
+            </div>
+          </div>
+
+          <div class="msg user">
+            <div class="msg-avatar user">U</div>
+            <div class="msg-body">
+              <div class="msg-name">Anda</div>
+              <div class="msg-bubble">Buatkan REST API dengan Node.js Express untuk sistem e-commerce lengkap dengan autentikasi JWT</div>
+            </div>
+          </div>
+
+          <div class="msg ai">
+            <div class="msg-avatar ai">N</div>
+            <div class="msg-body">
+              <div class="msg-name">NEXUS AI · Code Mode</div>
+              <div class="msg-bubble">
+                Berikut REST API e-commerce lengkap dengan JWT Auth, struktur production-ready:
+                <div class="code-block">
+                  <div class="code-header">
+                    <span class="code-lang">javascript — server.js</span>
+                    <button class="code-copy" onclick="copyCode(this, `// server.js`)">Copy</button>
+                  </div>
+                  <pre><span class="cm">// NEXUS AI Generated — E-Commerce API</span>
+<span class="kw">const</span> express = require(<span class="str">'express'</span>);
+<span class="kw">const</span> jwt = require(<span class="str">'jsonwebtoken'</span>);
+<span class="kw">const</span> bcrypt = require(<span class="str">'bcryptjs'</span>);
+<span class="kw">const</span> { Pool } = require(<span class="str">'pg'</span>);
+
+<span class="kw">const</span> app = express();
+app.use(express.json());
+
+<span class="cm">// Middleware: Authenticate JWT</span>
+<span class="kw">const</span> <span class="fn">authenticate</span> = (req, res, next) => {
+  <span class="kw">const</span> token = req.headers[<span class="str">'authorization'</span>]?.split(<span class="str">' '</span>)[<span class="num">1</span>];
+  <span class="kw">if</span> (!token) <span class="kw">return</span> res.status(<span class="num">401</span>).json({ error: <span class="str">'Unauthorized'</span> });
+  <span class="kw">try</span> {
+    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    next();
+  } <span class="kw">catch</span> { res.status(<span class="num">403</span>).json({ error: <span class="str">'Token invalid'</span> }); }
+};
+
+<span class="cm">// Auth Routes</span>
+app.post(<span class="str">'/api/auth/register'</span>, <span class="kw">async</span> (req, res) => { <span class="cm">/* ... */</span> });
+app.post(<span class="str">'/api/auth/login'</span>, <span class="kw">async</span> (req, res) => { <span class="cm">/* ... */</span> });
+
+<span class="cm">// Product Routes (protected)</span>
+app.get(<span class="str">'/api/products'</span>, authenticate, <span class="kw">async</span> (req, res) => {
+  <span class="kw">const</span> { page = <span class="num">1</span>, limit = <span class="num">20</span>, category } = req.query;
+  <span class="cm">// Paginated products with filter</span>
+});
+app.post(<span class="str">'/api/orders'</span>, authenticate, <span class="kw">async</span> (req, res) => {
+  <span class="cm">// Create order + payment processing</span>
+});
+
+app.listen(<span class="num">3000</span>, () => console.log(<span class="str">'🚀 API running on :3000'</span>));</pre>
+                </div>
+                Saya telah menyiapkan struktur lengkap dengan: Auth (register/login), Products CRUD, Orders, Cart, Payment gateway integration, Rate limiting, dan validasi input. Ingin saya generate kode lengkap untuk bagian mana?
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input-area">
+          <div class="mode-pills">
+            <button class="pill active" onclick="setPill(this)">💬 Chat</button>
+            <button class="pill" onclick="setPill(this)">⌨️ Code</button>
+            <button class="pill" onclick="setPill(this)">🔍 Research</button>
+            <button class="pill" onclick="setPill(this)">📋 Analyze</button>
+            <button class="pill" onclick="setPill(this)">🌐 Web Search</button>
+            <button class="pill" onclick="setPill(this)">📐 Math</button>
+          </div>
+          <div class="input-box">
+            <textarea id="chatInput" placeholder="Tanya apa saja... (Shift+Enter untuk baris baru)" rows="1"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"
+              oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+            <button class="send-btn" onclick="sendChat()">↑</button>
+          </div>
+          <div class="input-tools">
+            <button class="tool-chip" onclick="notify('📎 File upload dibuka')">📎 Lampiran</button>
+            <button class="tool-chip" onclick="notify('🎤 Voice input aktif')">🎤 Suara</button>
+            <button class="tool-chip" onclick="notify('🖼️ Image upload')">🖼️ Gambar</button>
+            <button class="tool-chip" onclick="notify('📋 Template dipilih')">📋 Template</button>
+            <div style="margin-left:auto;font-size:11px;color:var(--text3)">NEXUS Ultra-4 · 128K context</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== CODE PANEL ========== -->
+      <div class="panel" id="panel-code">
+        <div class="code-ide">
+          <div class="ide-sidebar">
+            <div style="padding:10px 14px 6px;font-size:11px;color:var(--text3);letter-spacing:1px;text-transform:uppercase">Explorer</div>
+            <div class="ide-file active">
+              <span class="ide-file-icon">📄</span> server.js
+            </div>
+            <div class="ide-file" onclick="switchFile(this, 'routes/auth.js')">
+              <span class="ide-file-icon">📁</span> routes/
+            </div>
+            <div class="ide-file" onclick="switchFile(this, 'models/User.js')" style="padding-left:28px">
+              <span class="ide-file-icon">📄</span> auth.js
+            </div>
+            <div class="ide-file" onclick="switchFile(this, 'models/User.js')" style="padding-left:28px">
+              <span class="ide-file-icon">📄</span> products.js
+            </div>
+            <div class="ide-file" onclick="switchFile(this, 'models/')">
+              <span class="ide-file-icon">📁</span> models/
+            </div>
+            <div class="ide-file" onclick="notify('Opening User.js...')" style="padding-left:28px">
+              <span class="ide-file-icon">📄</span> User.js
+            </div>
+            <div class="ide-file" onclick="notify('Opening Product.js...')" style="padding-left:28px">
+              <span class="ide-file-icon">📄</span> Product.js
+            </div>
+            <div class="ide-file" onclick="notify('Opening middleware/...')">
+              <span class="ide-file-icon">📁</span> middleware/
+            </div>
+            <div class="ide-file" onclick="notify('Opening .env...')">
+              <span class="ide-file-icon">⚙️</span> .env
+            </div>
+            <div class="ide-file" onclick="notify('Opening package.json...')">
+              <span class="ide-file-icon">📦</span> package.json
+            </div>
+          </div>
+
+          <div class="ide-main">
+            <div class="ide-tabs">
+              <div class="ide-tab active">server.js ✕</div>
+              <div class="ide-tab" onclick="notify('Switching tab...')">routes/auth.js ✕</div>
+              <div class="ide-tab" onclick="notify('Switching tab...')">models/User.js ✕</div>
+            </div>
+            <div class="ide-editor">
+              <pre id="codeEditorContent"><span class="cm">/**
+ * NEXUS AI — Code Studio
+ * E-Commerce REST API — Production Ready
+ * Generated with NEXUS-Ultra-4
+ */</span>
+
+<span class="kw">require</span>(<span class="str">'dotenv'</span>).config();
+<span class="kw">const</span> express = require(<span class="str">'express'</span>);
+<span class="kw">const</span> cors = require(<span class="str">'cors'</span>);
+<span class="kw">const</span> helmet = require(<span class="str">'helmet'</span>);
+<span class="kw">const</span> rateLimit = require(<span class="str">'express-rate-limit'</span>);
+<span class="kw">const</span> jwt = require(<span class="str">'jsonwebtoken'</span>);
+<span class="kw">const</span> bcrypt = require(<span class="str">'bcryptjs'</span>);
+
+<span class="kw">const</span> app = express();
+
+<span class="cm">// Security Middleware</span>
+app.use(helmet());
+app.use(cors({ origin: process.env.CLIENT_URL }));
+app.use(express.json({ limit: <span class="str">'10mb'</span> }));
+
+<span class="cm">// Rate Limiting</span>
+<span class="kw">const</span> limiter = rateLimit({
+  windowMs: <span class="num">15</span> * <span class="num">60</span> * <span class="num">1000</span>,
+  max: <span class="num">100</span>,
+  message: { error: <span class="str">'Too many requests'</span> }
+});
+app.use(<span class="str">'/api/'</span>, limiter);
+
+<span class="cm">// JWT Middleware</span>
+<span class="kw">const</span> <span class="fn">authenticate</span> = (req, res, next) => {
+  <span class="kw">const</span> token = req.headers.authorization?.split(<span class="str">' '</span>)[<span class="num">1</span>];
+  <span class="kw">if</span> (!token) <span class="kw">return</span> res.status(<span class="num">401</span>).json({ error: <span class="str">'Unauthorized'</span> });
+  <span class="kw">try</span> {
+    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    next();
+  } <span class="kw">catch</span>(err) {
+    res.status(<span class="num">403</span>).json({ error: <span class="str">'Token expired or invalid'</span> });
+  }
+};
+
+<span class="cm">// Routes</span>
+app.use(<span class="str">'/api/auth'</span>, require(<span class="str">'./routes/auth'</span>));
+app.use(<span class="str">'/api/products'</span>, authenticate, require(<span class="str">'./routes/products'</span>));
+app.use(<span class="str">'/api/orders'</span>, authenticate, require(<span class="str">'./routes/orders'</span>));
+app.use(<span class="str">'/api/cart'</span>, authenticate, require(<span class="str">'./routes/cart'</span>));
+app.use(<span class="str">'/api/payments'</span>, authenticate, require(<span class="str">'./routes/payments'</span>));
+app.use(<span class="str">'/api/admin'</span>, authenticate, require(<span class="str">'./routes/admin'</span>));
+
+<span class="cm">// Error Handler</span>
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(err.status || <span class="num">500</span>).json({
+    error: err.message || <span class="str">'Internal Server Error'</span>,
+    ...(process.env.NODE_ENV === <span class="str">'development'</span> && { stack: err.stack })
+  });
+});
+
+<span class="kw">const</span> PORT = process.env.PORT || <span class="num">3000</span>;
+app.listen(PORT, () => {
+  console.log(<span class="str">`🚀 NEXUS API running on port ${PORT}`</span>);
+  console.log(<span class="str">`📊 Environment: ${process.env.NODE_ENV}`</span>);
+});</pre>
+            </div>
+            <div class="ide-toolbar">
+              <button class="run-btn" onclick="notify('▶ Menjalankan kode...')">▶ Run</button>
+              <button class="ide-action" onclick="notify('🤖 AI sedang menganalisis kode...')">🤖 AI Review</button>
+              <button class="ide-action" onclick="notify('🔧 Auto-fix dijalankan')">🔧 Auto Fix</button>
+              <button class="ide-action" onclick="notify('✨ Kode dioptimalkan!')">✨ Optimize</button>
+              <button class="ide-action" onclick="notify('📋 Kode disalin!')">📋 Copy All</button>
+              <div style="margin-left:auto;font-size:11px;color:var(--text3)">JavaScript · UTF-8 · LF · 42 baris</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== IMAGE PANEL ========== -->
+      <div class="panel" id="panel-image">
+        <div class="img-panel">
+          <div class="img-controls">
+            <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700">🎨 Image Generator</div>
+
+            <div class="form-group">
+              <div class="form-label">PROMPT</div>
+              <textarea class="form-textarea" id="imgPrompt" placeholder="Describe your image in detail...">A futuristic cyberpunk city at night, ultra-realistic, 8K, cinematic lighting, neon reflections on wet streets, photorealistic</textarea>
+            </div>
+
+            <div class="form-group">
+              <div class="form-label">NEGATIVE PROMPT</div>
+              <textarea class="form-textarea" style="min-height:50px" placeholder="What to avoid...">blurry, low quality, distorted, watermark</textarea>
+            </div>
+
+            <div class="form-group">
+              <div class="form-label">STYLE</div>
+              <div class="style-grid">
+                <div class="style-chip active" onclick="setStyle(this)">Photorealistic</div>
+                <div class="style-chip" onclick="setStyle(this)">Cinematic</div>
+                <div class="style-chip" onclick="setStyle(this)">Anime</div>
+                <div class="style-chip" onclick="setStyle(this)">Oil Painting</div>
+                <div class="style-chip" onclick="setStyle(this)">3D Render</div>
+                <div class="style-chip" onclick="setStyle(this)">Watercolor</div>
+                <div class="style-chip" onclick="setStyle(this)">Sketch</div>
+                <div class="style-chip" onclick="setStyle(this)">Pixel Art</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="form-label">ASPECT RATIO</div>
+              <select class="form-select">
+                <option>1:1 Square (1024×1024)</option>
+                <option selected>16:9 Landscape (1792×1024)</option>
+                <option>9:16 Portrait (1024×1792)</option>
+                <option>4:3 (1365×1024)</option>
+                <option>21:9 Ultrawide (2048×878)</option>
+              </select>
+            </div>
+
+            <div class="slider-wrap">
+              <div class="form-label">QUALITY / STEPS</div>
+              <div class="slider-row"><span>Draft</span><span id="stepsVal">30</span><span>Ultra</span></div>
+              <input type="range" min="10" max="50" value="30" oninput="document.getElementById('stepsVal').textContent=this.value">
+            </div>
+
+            <div class="slider-wrap">
+              <div class="form-label">CFG SCALE</div>
+              <div class="slider-row"><span>Creative</span><span id="cfgVal">7.5</span><span>Precise</span></div>
+              <input type="range" min="1" max="20" value="7" step="0.5" oninput="document.getElementById('cfgVal').textContent=this.value">
+            </div>
+
+            <div class="form-group">
+              <div class="form-label">BATCH COUNT</div>
+              <select class="form-select">
+                <option>1 gambar</option>
+                <option>2 gambar</option>
+                <option selected>4 gambar</option>
+                <option>8 gambar</option>
+              </select>
+            </div>
+
+            <button class="generate-btn" onclick="generateImages()">⚡ Generate Images</button>
+          </div>
+
+          <div class="img-grid" id="imgGrid">
+            <div class="img-card">
+              <div class="img-preview grad-1"><span>🌆</span></div>
+              <div class="img-info"><div class="img-prompt">Cyberpunk city, neon lights, ultra-realistic, 8K</div></div>
+            </div>
+            <div class="img-card">
+              <div class="img-preview grad-2"><span>🌸</span></div>
+              <div class="img-info"><div class="img-prompt">Cherry blossom garden, Japanese temple, golden hour</div></div>
+            </div>
+            <div class="img-card">
+              <div class="img-preview grad-3"><span>🤖</span></div>
+              <div class="img-info"><div class="img-prompt">Futuristic robot, metallic texture, studio light</div></div>
+            </div>
+            <div class="img-card">
+              <div class="img-preview grad-4"><span>🏔️</span></div>
+              <div class="img-info"><div class="img-prompt">Mountain landscape, aurora borealis, photorealistic</div></div>
+            </div>
+            <div class="img-card">
+              <div class="img-preview grad-5"><span>🎭</span></div>
+              <div class="img-info"><div class="img-prompt">Surreal portrait, oil painting style, baroque</div></div>
+            </div>
+            <div class="img-card">
+              <div class="img-preview grad-6"><span>🌌</span></div>
+              <div class="img-info"><div class="img-prompt">Galaxy nebula, space telescope, ultra HD</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== AGENTS PANEL ========== -->
+      <div class="panel" id="panel-agents">
+        <div class="agents-panel">
+          <div class="section-header">
+            <div>
+              <div class="section-title">AI Agents Spesialis</div>
+              <div style="font-size:13px;color:var(--text2);margin-top:4px">Delegasikan tugas ke agen AI berkapabilitas pakar</div>
+            </div>
+            <span class="tag new">12 Aktif</span>
+          </div>
+
+          <div class="agents-grid">
+            <div class="agent-card">
+              <div class="agent-head">
+                <div class="agent-avatar" style="background:rgba(124,92,252,0.15)">👨‍💻</div>
+                <div>
+                  <div class="agent-name">CodeMaster Pro</div>
+                  <div class="agent-role">Senior Full-Stack Engineer AI</div>
+                </div>
+              </div>
+              <div class="agent-desc">Generate, review, dan debug kode production-quality. Menguasai 40+ bahasa dan framework modern.</div>
+              <div class="agent-skills">
+                <span class="skill-tag">React</span>
+                <span class="skill-tag">Node.js</span>
+                <span class="skill-tag">Python</span>
+                <span class="skill-tag">DevOps</span>
+                <span class="skill-tag">+12</span>
+              </div>
+              <button class="agent-btn" onclick="notify('🤖 CodeMaster Pro diaktifkan!')">▶ Aktifkan Agent</button>
+            </div>
+
+            <div class="agent-card">
+              <div class="agent-head">
+                <div class="agent-avatar" style="background:rgba(6,214,160,0.15)">🔬</div>
+                <div>
+                  <div class="agent-name">ResearchPro</div>
+                  <div class="agent-role">Deep Research Specialist AI</div>
+                </div>
+              </div>
+              <div class="agent-desc">Riset mendalam dari 1000+ sumber, analisis kompetitor, tren pasar, dan laporan akademis terstruktur.</div>
+              <div class="agent-skills">
+                <span class="skill-tag">Web Search</span>
+                <span class="skill-tag">Analysis</span>
+                <span class="skill-tag">Reports</span>
+                <span class="skill-tag">Citations</span>
+              </div>
+              <button class="agent-btn" onclick="notify('🔬 ResearchPro diaktifkan!')">▶ Aktifkan Agent</button>
+            </div>
+
+            <div class="agent-card">
+              <div class="agent-head">
+                <div class="agent-avatar" style="background:rgba(255,209,102,0.15)">📊</div>
+                <div>
+                  <div class="agent-name">BizStrategist</div>
+                  <div class="agent-role">Business Strategy & Management AI</div>
+                </div>
+              </div>
+              <div class="agent-desc">Perencanaan bisnis, analisis SWOT, strategi go-to-market, manajemen tim, dan OKR framework.</div>
+              <div class="agent-skills">
+                <span class="skill-tag">Strategy</span>
+                <span class="skill-tag">OKR</span>
+                <span class="skill-tag">Finance</span>
+                <span class="skill-tag">Marketing</span>
+              </div>
+              <button class="agent-btn" onclick="notify('📊 BizStrategist diaktifkan!')">▶ Aktifkan Agent</button>
+            </div>
+
+            <div class="agent-card">
+              <div class="agent-head">
+                <div class="agent-avatar" style="background:rgba(255,107,107,0.15)">🎨</div>
+                <div>
+                  <div class="agent-name">DesignGenius</div>
+                  <div class="agent-role">UI/UX & Creative Design AI</div>
+                </div>
+              </div>
+              <div class="agent-desc">Generate desain UI/UX, sistem warna, tipografi, brand identity, dan prompt gambar berkualitas tinggi.</div>
+              <div class="agent-skills">
+                <span class="skill-tag">Figma</span>
+                <span class="skill-tag">UI/UX</span>
+                <span class="skill-tag">Branding</span>
+                <span class="skill-tag">Image Gen</span>
+              </div>
+              <button class="agent-btn" onclick="notify('🎨 DesignGenius diaktifkan!')">▶ Aktifkan Agent</button>
+            </div>
+
+            <div class="agent-card">
+              <div class="agent-head">
+                <div class="agent-avatar" style="background:rgba(167,139,250,0.15)">⚖️</div>
+                <div>
+                  <div class="agent-name">LegalEagle</div>
+                  <div class="agent-role">Legal & Compliance Advisor AI</div>
+                </div>
+              </div>
+              <div class="agent-desc">Analisis kontrak, draft perjanjian, compliance check, hak kekayaan intelektual, dan regulasi bisnis.</div>
+              <div class="agent-skills">
+                <span class="skill-tag">Contracts</span>
+                <span class="skill-tag">IP Law</span>
+                <span class="skill-tag">Compliance</span>
+                <span class="skill-tag">Draft</span>
+              </div>
+              <button class="agent-btn" onclick="notify('⚖️ LegalEagle diaktifkan!')">▶ Aktifkan Agent</button>
+            </div>
+
+            <div class="agent-card">
+              <div class="agent-head">
+                <div class="agent-avatar" style="background:rgba(0,242,254,0.1)">🧬</div>
+                <div>
+                  <div class="agent-name">MedAdvisor</div>
+                  <div class="agent-role">Medical & Health Information AI</div>
+                </div>
+              </div>
+              <div class="agent-desc">Informasi medis berbasis evidence, analisis gejala, interpretasi data kesehatan, dan literature review.</div>
+              <div class="agent-skills">
+                <span class="skill-tag">Diagnosis Info</span>
+                <span class="skill-tag">Research</span>
+                <span class="skill-tag">Drug Info</span>
+              </div>
+              <button class="agent-btn" onclick="notify('🧬 MedAdvisor diaktifkan!')">▶ Aktifkan Agent</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== PLAYGROUND PANEL ========== -->
+      <div class="panel" id="panel-playground">
+        <div class="playground">
+          <div class="pg-editor">
+            <div class="pg-toolbar">
+              <select class="pg-select">
+                <option>NEXUS-Ultra-4</option>
+                <option>NEXUS-Turbo-3</option>
+                <option>NEXUS-Vision-2</option>
+                <option>NEXUS-Code-1</option>
+              </select>
+              <select class="pg-select">
+                <option>Temp: 0.7</option>
+                <option>Temp: 0.3</option>
+                <option>Temp: 1.0</option>
+                <option>Temp: 1.5</option>
+              </select>
+              <select class="pg-select">
+                <option>Max: 4096 tokens</option>
+                <option>Max: 2048 tokens</option>
+                <option>Max: 8192 tokens</option>
+              </select>
+              <button class="run-btn" onclick="runPlayground()" style="margin-left:auto">▶ Run Prompt</button>
+              <button class="ide-action" onclick="notify('📋 Prompt disalin')">Copy</button>
+              <button class="ide-action" onclick="clearPlayground()">Clear</button>
+            </div>
+            <div class="pg-area">
+              <div class="pg-input-wrap">
+                <div class="pg-label">SYSTEM PROMPT</div>
+                <textarea class="pg-textarea" id="pgSystem" style="max-height:100px;border-bottom:1px solid var(--border)">You are NEXUS AI, a superintelligent assistant with expertise across all domains. Respond in Indonesian when the user writes in Indonesian.</textarea>
+                <div class="pg-label">USER PROMPT</div>
+                <textarea class="pg-textarea" id="pgPrompt" placeholder="Masukkan prompt Anda di sini...">Jelaskan cara kerja neural network dalam 3 paragraf, gunakan analogi yang mudah dipahami.</textarea>
+              </div>
+              <div class="pg-divider"></div>
+              <div class="pg-output-wrap">
+                <div class="pg-label">OUTPUT <span id="pgStatus" style="color:var(--accent3)">● Ready</span></div>
+                <div class="pg-output-content" id="pgOutput">Neural network bekerja mirip dengan cara otak manusia memproses informasi...
+
+Bayangkan otak Anda memiliki miliaran sel saraf (neuron) yang terhubung satu sama lain. Ketika Anda belajar sesuatu, koneksi antar neuron menguat. Neural network buatan bekerja dengan prinsip serupa — terdiri dari "neuron" digital dalam lapisan (input → hidden layers → output).
+
+Setiap neuron menerima sinyal, memprosesnya dengan fungsi matematika (activation function), lalu meneruskan hasilnya. Selama pelatihan, jaringan terus menyesuaikan "bobot" koneksinya menggunakan backpropagation, seperti otak yang terus belajar dari pengalaman.
+
+Hasilnya? Setelah dilatih dengan jutaan contoh, neural network bisa mengenali wajah, menerjemahkan bahasa, bahkan menghasilkan kode — karena ia telah "menghafal pola" dari data pelatihan.
+
+---
+📊 Token used: 187 | Latency: 0.8s | Model: NEXUS-Ultra-4</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+// =================== NAVIGATION ===================
+function showPanel(name, el) {
+  document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+  var panel = document.getElementById('panel-' + name);
+  if (panel) panel.classList.add('active');
+  if (el) el.classList.add('active');
+  var titles = {
+    dashboard: 'Dashboard',
+    chat: 'AI Chat — Expert Mode',
+    code: 'Code Studio — Full-Stack',
+    image: 'Image Generator — Ultra HD',
+    agents: 'AI Agents Marketplace',
+    playground: 'API Playground'
+  };
+  var titleEl = document.getElementById('panelTitle');
+  if (titleEl) titleEl.textContent = titles[name] || name;
+}
+
+// =================== CHAT ===================
+var responses = [
+  "Tentu! Saya akan membantu Anda. Berikut solusi terbaik:\n\n**Pendekatan yang direkomendasikan:**\n1. Pahami konteks masalah\n2. Terapkan solusi optimal\n3. Validasi hasilnya\n\nApakah Anda ingin saya elaborasi lebih lanjut?",
+  "Pertanyaan yang sangat bagus! Saya telah menganalisis berbagai pendekatan dan ini adalah jawaban paling akurat...",
+  "Sebagai superintelligence, saya dapat memberikan insight yang tidak akan Anda temukan di tempat lain. Inilah analisis komprehensif saya...",
+  "Saya sudah memproses permintaan Anda. Berikut solusi production-ready yang bisa langsung diimplementasikan..."
+];
+var msgCount = 0;
+
+function sendChat() {
+  var input = document.getElementById('chatInput');
+  if (!input) return;
+  var text = input.value.trim();
+  if (!text) return;
+
+  var msgs = document.getElementById('chatMessages');
+  if (!msgs) return; // Safety check
+
+  // User message
+  var userDiv = document.createElement('div');
+  userDiv.className = 'msg user';
+  userDiv.innerHTML = 
+    '<div class="msg-avatar user">U</div>' +
+    '<div class="msg-body">' +
+      '<div class="msg-name">Anda</div>' +
+      '<div class="msg-bubble">' + escHtml(text) + '</div>' +
+    '</div>';
+  msgs.appendChild(userDiv);
+
+  input.value = '';
+  input.style.height = 'auto';
+  msgs.scrollTop = msgs.scrollHeight;
+
+  // Typing indicator
+  var typingDiv = document.createElement('div');
+  typingDiv.className = 'msg ai';
+  typingDiv.innerHTML = 
+    '<div class="msg-avatar ai">N</div>' +
+    '<div class="msg-body">' +
+      '<div class="msg-name">NEXUS AI</div>' +
+      '<div class="msg-bubble">' +
+        '<div class="typing"><span></span><span></span><span></span></div>' +
+      '</div>' +
+    '</div>';
+  msgs.appendChild(typingDiv);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  // AI Response (after delay)
+  var responseText = responses[msgCount % responses.length];
+  msgCount++;
+  
+  setTimeout(function() {
+    typingDiv.remove();
+    var aiDiv = document.createElement('div');
+    aiDiv.className = 'msg ai';
+    aiDiv.innerHTML = 
+      '<div class="msg-avatar ai">N</div>' +
+      '<div class="msg-body">' +
+        '<div class="msg-name">NEXUS AI · Ultra-4</div>' +
+        '<div class="msg-bubble">' + responseText.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>') + '</div>' +
+      '</div>';
+    msgs.appendChild(aiDiv);
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 1200 + Math.random() * 800);
+}
+
+function escHtml(s) {
+  if (!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function setPill(el) {
+  if (!el) return;
+  document.querySelectorAll('.pill').forEach(function(p) { p.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+// =================== MODEL CYCLE ===================
+var models = ['NEXUS-Ultra-4', 'NEXUS-Turbo-3', 'NEXUS-Vision-2', 'NEXUS-Code-1'];
+var modelIdx = 0;
+
+function cycleModel(el) {
+  modelIdx = (modelIdx + 1) % models.length;
+  var nameEl = document.getElementById('modelName');
+  if (nameEl) nameEl.textContent = models[modelIdx];
+  notify('🔄 Model: ' + models[modelIdx]);
+}
+
+// =================== CODE IDE ===================
+function switchFile(el, name) {
+  if (!el) return;
+  if (name) {
+    document.querySelectorAll('.ide-file').forEach(function(f) { f.classList.remove('active'); });
+    el.classList.add('active');
+    notify('📄 Membuka ' + name);
+  } else {
+    // Toggle based on click
+    var target = el;
+    document.querySelectorAll('.ide-file').forEach(function(f) { f.classList.remove('active'); });
+    target.classList.add('active');
+    var filename = target.textContent.trim();
+    notify('📄 Opening ' + filename + '...');
+  }
+}
+
+function copyCode(btn, code) {
+  var codeToCopy = code || '// Code';
+  navigator.clipboard.writeText(codeToCopy).catch(function() {});
+  if (btn) {
+    btn.textContent = '✓ Copied!';
+    setTimeout(function() { btn.textContent = 'Copy'; }, 2000);
+  }
+  notify('📋 Kode disalin ke clipboard!');
+}
+
+// =================== IMAGE GENERATOR ===================
+var gradients = ['grad-1','grad-2','grad-3','grad-4','grad-5','grad-6'];
+var emojis = ['🌆','🌸','🤖','🏔️','🎭','🌌','🎆','🦋','🌊','🔮','🌿','⭐'];
+var generating = false;
+
+function generateImages() {
+  if (generating) return;
+  generating = true;
+  
+  var promptEl = document.getElementById('imgPrompt');
+  var prompt = promptEl ? promptEl.value : 'A beautiful landscape';
+  var grid = document.getElementById('imgGrid');
+  if (!grid) {
+    generating = false;
+    return;
+  }
+
+  notify('⚡ Generating 4 gambar ultra-HD...');
+
+  // Add loading cards
+  var tempCards = [];
+  for (var i = 0; i < 4; i++) {
+    var card = document.createElement('div');
+    card.className = 'img-card';
+    card.innerHTML = 
+      '<div class="img-preview" style="background:var(--surface2);animation:blink 1s infinite">' +
+        '<div style="font-size:14px;color:var(--text3);text-align:center">' +
+          '<div style="font-size:28px;margin-bottom:8px">⚡</div>' +
+          'Generating...' +
+        '</div>' +
+      '</div>' +
+      '<div class="img-info"><div class="img-prompt" style="color:var(--text3)">Processing...</div></div>';
+    grid.insertBefore(card, grid.firstChild);
+    tempCards.push(card);
+  }
+
+  setTimeout(function() {
+    tempCards.forEach(function(card, idx) {
+      var g = gradients[Math.floor(Math.random() * gradients.length)];
+      var e = emojis[Math.floor(Math.random() * emojis.length)];
+      card.innerHTML = 
+        '<div class="img-preview ' + g + '"><span>' + e + '</span></div>' +
+        '<div class="img-info"><div class="img-prompt">' + prompt.substring(0,60) + '...</div></div>';
+    });
+    generating = false;
+    notify('✅ 4 gambar berhasil digenerate!');
+  }, 2500);
+}
+
+function setStyle(el) {
+  if (!el) return;
+  document.querySelectorAll('.style-chip').forEach(function(c) { c.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+// =================== PLAYGROUND ===================
+function runPlayground() {
+  var output = document.getElementById('pgOutput');
+  var status = document.getElementById('pgStatus');
+  var promptEl = document.getElementById('pgPrompt');
+  var prompt = promptEl ? promptEl.value : '';
+  
+  if (!output || !status || !prompt) return;
+
+  status.textContent = '● Generating...';
+  status.style.color = 'var(--accent5)';
+  output.textContent = '';
+
+  var fakeResponse = 
+    'Memproses prompt: "' + prompt.substring(0,40) + '..."\n\n' +
+    '[NEXUS-Ultra-4 Response]\n\n' +
+    'Berdasarkan analisis mendalam saya menggunakan 175 billion parameter, ' +
+    'berikut respons yang dioptimalkan:\n\n' +
+    'Output berhasil digenerate dengan akurasi tinggi.\n' +
+    'Model telah mempertimbangkan konteks penuh dan memberikan jawaban yang komprehensif.\n\n' +
+    'Confidence: 98.7% | Perplexity: 12.4\n' +
+    '---\n📊 Tokens: ' + Math.floor(Math.random()*500+100) + 
+    ' | Latency: ' + (Math.random()*0.5+0.3).toFixed(2) + 's';
+
+  var i = 0;
+  var interval = setInterval(function() {
+    if (i < fakeResponse.length) {
+      output.textContent += fakeResponse[i];
+      i++;
+    } else {
+      clearInterval(interval);
+      status.textContent = '● Done';
+      status.style.color = 'var(--accent3)';
+    }
+  }, 8);
+}
+
+function clearPlayground() {
+  var output = document.getElementById('pgOutput');
+  var status = document.getElementById('pgStatus');
+  if (output) output.textContent = '';
+  if (status) {
+    status.textContent = '● Ready';
+    status.style.color = 'var(--accent3)';
+  }
+}
+
+// =================== AGENT ===================
+function activateAgent(el) {
+  var card = el.closest ? el.closest('.agent-card') : null;
+  var nameEl = card ? card.querySelector('.agent-name') : null;
+  var agentName = nameEl ? nameEl.textContent : 'Agent';
+  notify('🤖 ' + agentName + ' activated!');
+}
+
+// =================== NOTIFICATIONS ===================
+function notify(msg) {
+  var existing = document.querySelector('.notif');
+  if (existing) existing.remove();
+
+  var el = document.createElement('div');
+  el.className = 'notif';
+  el.innerHTML = '<span>' + msg + '</span>';
+  document.body.appendChild(el);
+  setTimeout(function() { 
+    if (el.parentNode) el.parentNode.remove(); 
+  }, 3000);
+}
+
+// Initialize notification
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() { notify('🚀 NEXUS AI ready!'); }, 800);
+});
+
+console.log('✅ NEXUS AI JavaScript loaded successfully');
+</script>
+
+</body>
+</html>
